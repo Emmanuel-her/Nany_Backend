@@ -1,9 +1,11 @@
+from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from app.schemas.booking_schema import ReservaCreate, ReservaResponse
 from app.services.create_booking_service import CrearReservaService
 from app.services.obtener_reservas_service import ObtenerReservasService
+from app.services.obtener_reserva_por_id_service import ObtenerReservaPorIdService
 from app.repositories.mongo_booking_repository import MongoReservaRepository
 from app.core.database import get_database
 
@@ -16,6 +18,10 @@ def obtener_servicio_crear_reserva(db: AsyncIOMotorDatabase = Depends(get_databa
 def obtener_servicio_obtener_reservas(db: AsyncIOMotorDatabase = Depends(get_database)) -> ObtenerReservasService:
     repositorio = MongoReservaRepository(db)
     return ObtenerReservasService(repositorio)
+
+def obtener_servicio_obtener_reserva_por_id(db: AsyncIOMotorDatabase = Depends(get_database)) -> ObtenerReservaPorIdService:
+    repositorio = MongoReservaRepository(db)
+    return ObtenerReservaPorIdService(repositorio)
 
 @router.post("", response_model=ReservaResponse, status_code=status.HTTP_201_CREATED)
 async def crear_reserva(
@@ -56,5 +62,27 @@ async def obtener_reservas(
                 creado_en=r.creado_en
             ) for r in reservas
         ]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/{id}", response_model=ReservaResponse, status_code=status.HTTP_200_OK)
+async def obtener_reserva_por_id(
+    id: UUID,
+    servicio: ObtenerReservaPorIdService = Depends(obtener_servicio_obtener_reserva_por_id)
+):
+    try:
+        reserva = await servicio.ejecutar(id)
+        if not reserva:
+            raise HTTPException(status_code=404, detail="Reserva no encontrada")
+            
+        return ReservaResponse(
+            id=reserva.id,
+            padre=reserva.padre.__dict__,
+            detalles_servicio=reserva.detalles_servicio.__dict__,
+            ninos=[n.__dict__ for n in reserva.ninos],
+            creado_en=reserva.creado_en
+        )
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
