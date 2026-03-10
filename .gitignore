@@ -21,3 +21,8 @@ Thumbs.db
 
 # Test verification scripts
 test_booking.py
+test.json
+test_post.py
+
+# Firebase Secrets
+nanny-go-f28dc-firebase-adminsdk-fbsvc-1171462493.json

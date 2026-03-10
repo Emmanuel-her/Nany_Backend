@@ -6,6 +6,7 @@ from app.schemas.booking_schema import ReservaCreate, ReservaResponse
 from app.services.create_booking_service import CrearReservaService
 from app.services.obtener_reservas_service import ObtenerReservasService
 from app.services.obtener_reserva_por_id_service import ObtenerReservaPorIdService
+from app.services.notification_service import FirebaseNotificationService
 from app.repositories.mongo_booking_repository import MongoReservaRepository
 from app.core.database import get_database
 
@@ -13,7 +14,8 @@ router = APIRouter(prefix="/bookings", tags=["Reservas"])
 
 def obtener_servicio_crear_reserva(db: AsyncIOMotorDatabase = Depends(get_database)) -> CrearReservaService:
     repositorio = MongoReservaRepository(db)
-    return CrearReservaService(repositorio)
+    notification_service = FirebaseNotificationService()
+    return CrearReservaService(repositorio, notification_service)
 
 def obtener_servicio_obtener_reservas(db: AsyncIOMotorDatabase = Depends(get_database)) -> ObtenerReservasService:
     repositorio = MongoReservaRepository(db)
