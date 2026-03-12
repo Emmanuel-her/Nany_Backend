@@ -16,15 +16,19 @@ class PadreCreate(BaseModel):
 class DetallesServicioCreate(BaseModel):
     fecha_inicio: date
     hora_inicio: time
+    fecha_fin: date
+    hora_fin: time
     tipo: TipoServicio
 
 class ReservaCreate(BaseModel):
+    numero_contrato: str = Field(..., min_length=1, description="Número de contrato obligatorio para la reserva")
     padre: PadreCreate
     detalles_servicio: DetallesServicioCreate
     ninos: List[NinoCreate] = Field(..., min_length=1, description="Se requiere al menos un niño marcado en la reserva")
 
 class ReservaResponse(BaseModel):
     id: UUID
+    numero_contrato: str
     padre: PadreCreate
     detalles_servicio: DetallesServicioCreate
     ninos: List[NinoCreate]

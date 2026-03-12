@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from app.api.bookings import router as bookings_router
+from app.api.nannies import router as nannies_router
 from app.core.database import client
 from app.core.firebase import init_firebase
 
@@ -18,6 +19,7 @@ app.add_middleware(
 )
 
 app.include_router(bookings_router)
+app.include_router(nannies_router)
 
 @app.on_event("startup")
 async def startup_event():

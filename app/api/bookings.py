@@ -32,6 +32,7 @@ async def crear_reserva(
 ):
     try:
         reserva = await servicio.ejecutar(
+            numero_contrato=reserva_in.numero_contrato,
             datos_padre=reserva_in.padre.model_dump(),
             datos_servicio=reserva_in.detalles_servicio.model_dump(),
             datos_ninos=[nino.model_dump() for nino in reserva_in.ninos]
@@ -39,6 +40,7 @@ async def crear_reserva(
         
         return ReservaResponse(
             id=reserva.id,
+            numero_contrato=reserva.numero_contrato,
             padre=reserva.padre.__dict__,
             detalles_servicio=reserva.detalles_servicio.__dict__,
             ninos=[nino.__dict__ for nino in reserva.ninos],
@@ -58,6 +60,7 @@ async def obtener_reservas(
         return [
             ReservaResponse(
                 id=r.id,
+                numero_contrato=r.numero_contrato,
                 padre=r.padre.__dict__,
                 detalles_servicio=r.detalles_servicio.__dict__,
                 ninos=[n.__dict__ for n in r.ninos],
@@ -79,6 +82,7 @@ async def obtener_reserva_por_id(
             
         return ReservaResponse(
             id=reserva.id,
+            numero_contrato=reserva.numero_contrato,
             padre=reserva.padre.__dict__,
             detalles_servicio=reserva.detalles_servicio.__dict__,
             ninos=[n.__dict__ for n in reserva.ninos],

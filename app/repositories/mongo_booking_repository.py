@@ -12,6 +12,7 @@ class MongoReservaRepository(ReservaRepository):
     async def guardar(self, reserva: Reserva) -> None:
         documento = {
             "_id": str(reserva.id),
+            "numero_contrato": reserva.numero_contrato,
             "padre": {
                 "nombre_completo": reserva.padre.nombre_completo,
                 "numero_documento": reserva.padre.numero_documento,
@@ -20,6 +21,8 @@ class MongoReservaRepository(ReservaRepository):
             "detalles_servicio": {
                 "fecha_inicio": reserva.detalles_servicio.fecha_inicio.isoformat(),
                 "hora_inicio": reserva.detalles_servicio.hora_inicio.isoformat(),
+                "fecha_fin": reserva.detalles_servicio.fecha_fin.isoformat(),
+                "hora_fin": reserva.detalles_servicio.hora_fin.isoformat(),
                 "tipo": reserva.detalles_servicio.tipo.value,
                 "estado": reserva.detalles_servicio.estado
             },
@@ -46,6 +49,8 @@ class MongoReservaRepository(ReservaRepository):
             detalles_servicio = DetallesServicio(
                 fecha_inicio=date.fromisoformat(doc["detalles_servicio"]["fecha_inicio"]),
                 hora_inicio=time.fromisoformat(doc["detalles_servicio"]["hora_inicio"]),
+                fecha_fin=date.fromisoformat(doc["detalles_servicio"]["fecha_fin"]),
+                hora_fin=time.fromisoformat(doc["detalles_servicio"]["hora_fin"]),
                 tipo=TipoServicio(doc["detalles_servicio"]["tipo"]),
                 estado=doc["detalles_servicio"]["estado"]
             )
@@ -58,6 +63,7 @@ class MongoReservaRepository(ReservaRepository):
             
             # Reconstruir Entity
             reserva = Reserva(
+                numero_contrato=doc["numero_contrato"],
                 padre=padre,
                 detalles_servicio=detalles_servicio,
                 ninos=ninos,
@@ -81,6 +87,8 @@ class MongoReservaRepository(ReservaRepository):
         detalles_servicio = DetallesServicio(
             fecha_inicio=date.fromisoformat(doc["detalles_servicio"]["fecha_inicio"]),
             hora_inicio=time.fromisoformat(doc["detalles_servicio"]["hora_inicio"]),
+            fecha_fin=date.fromisoformat(doc["detalles_servicio"]["fecha_fin"]),
+            hora_fin=time.fromisoformat(doc["detalles_servicio"]["hora_fin"]),
             tipo=TipoServicio(doc["detalles_servicio"]["tipo"]),
             estado=doc["detalles_servicio"]["estado"]
         )
@@ -93,6 +101,7 @@ class MongoReservaRepository(ReservaRepository):
         
         # Reconstruir Entity
         reserva = Reserva(
+            numero_contrato=doc["numero_contrato"],
             padre=padre,
             detalles_servicio=detalles_servicio,
             ninos=ninos,

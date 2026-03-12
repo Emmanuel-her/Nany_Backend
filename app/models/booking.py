@@ -24,11 +24,14 @@ class Nino:
 class DetallesServicio:
     fecha_inicio: date
     hora_inicio: time
+    fecha_fin: date
+    hora_fin: time
     tipo: TipoServicio
     estado: str = "pendiente"
 
 @dataclass
 class Reserva:
+    numero_contrato: str
     padre: Padre
     detalles_servicio: DetallesServicio
     ninos: List[Nino]

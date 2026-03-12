@@ -7,7 +7,7 @@ class CrearReservaService:
         self.repositorio = repositorio
         self.notification_service = notification_service
 
-    async def ejecutar(self, datos_padre: dict, datos_servicio: dict, datos_ninos: list) -> Reserva:
+    async def ejecutar(self, numero_contrato: str, datos_padre: dict, datos_servicio: dict, datos_ninos: list) -> Reserva:
         # Crear Value Objects
         padre = Padre(**datos_padre)
         detalles_servicio = DetallesServicio(**datos_servicio)
@@ -15,6 +15,7 @@ class CrearReservaService:
         
         # Crear Entidad principal
         reserva = Reserva(
+            numero_contrato=numero_contrato,
             padre=padre,
             detalles_servicio=detalles_servicio,
             ninos=ninos
